@@ -1,0 +1,26 @@
+{
+  "name": "sqs-practice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/handler.js",
+  "scripts": {
+    "start": "npm run build && serverless offline start",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.106",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "aws-lambda": "^1.0.7",
+    "aws-sdk": "^2.1231.0",
+    "nodemon": "^2.0.20",
+    "serverless-offline": "^7.0.0",
+    "serverless-offline-sqs": "^5.0.0",
+    "ts-node": "^10.9.1"
+  }
+}
