@@ -9,7 +9,7 @@ import { getUserById } from "../repository/user.repository";
 export const getUser = async (
   userId: Types.ObjectId
 ): Promise<IGetUserResponse> => {
-  console.log("Get user service")
+  console.log("Get user")
   let user: User;
   console.log(
     "TTL",
