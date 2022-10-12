@@ -64,21 +64,26 @@ plugins:
 functions:
   hello:
     handler: dist/handler.hello
-  createSQS:
-    handler: dist/sqs/createSQS.createSQS
+  createQueue:
+    handler: dist/sqs/createQueue.createQueue
     events:
       - http:
           path: /sqs/create
           method: POST
-  # testQueue:
-  #   handler: dist/sqs/queueHandler.queueHandler
-  #   events:
-  #     - sqs:
-  #         queueName: DemoQueue
-  #         arn: 
-  #           Fn::GetAtt
-  #             - DemoQueue
-  #             - Arn
+  getQueueRecords:
+    handler: dist/sqs/getQueueRecords.getQueueRecords
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - DemoQueue
+              - Arn
+  SendMessageToQueue:
+    handler: dist/sqs/sendMessageToQueue.SendMessageToQueue
+    events:
+      - http:
+         path: /sqs/send/message
+         method: POST
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -131,7 +136,7 @@ resources:
 
 custom:
   serverless-offline-sqs:
-    autoCreate: true                 # create queue if not exists
+    # autoCreate: true                 # create queue if not exists
     apiVersion: '2012-11-05'
     endpoint: http://0.0.0.0:9324
     region: eu-west-1
