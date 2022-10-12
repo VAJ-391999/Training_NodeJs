@@ -23,9 +23,15 @@ service: sqs-practice
 provider:
   name: aws
   runtime: nodejs12.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+       - sqs:*
+      Resource: '*'
 
 plugins:
   - serverless-offline-sqs
+  - serverless-offline-scheduler
   - serverless-offline
 
 # you can overwrite defaults here
@@ -64,12 +70,20 @@ plugins:
 functions:
   hello:
     handler: dist/handler.hello
+    events:
+      - schedule: rate(1 minute)
   createQueue:
     handler: dist/sqs/createQueue.createQueue
     events:
       - http:
           path: /sqs/create
           method: POST
+  SendMessageToQueue:
+    handler: dist/sqs/sendMessageToQueue.SendMessageToQueue
+    events:
+      - http:
+         path: /sqs/send/message
+         method: POST
   getQueueRecords:
     handler: dist/sqs/getQueueRecords.getQueueRecords
     events:
@@ -78,12 +92,15 @@ functions:
             Fn::GetAtt:
               - DemoQueue
               - Arn
-  SendMessageToQueue:
-    handler: dist/sqs/sendMessageToQueue.SendMessageToQueue
+          enabled: true
+          batchSize: 1
+          # maximumBatchingWindow: 10
+  ReceiveMessageFromQueue:
+    handler: dist/sqs/receiveMessageFromQueue.ReceiveMessageFromQueue
     events:
       - http:
-         path: /sqs/send/message
-         method: POST
+          path: /sqs/receive/message
+          method: POST
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -131,12 +148,12 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: demo-queue
-        VisibilityTimeout: 60
+        VisibilityTimeout: 10
         MessageRetentionPeriod: 345600
 
 custom:
   serverless-offline-sqs:
-    # autoCreate: true                 # create queue if not exists
+    autoCreate: true                 # create queue if not exists
     apiVersion: '2012-11-05'
     endpoint: http://0.0.0.0:9324
     region: eu-west-1

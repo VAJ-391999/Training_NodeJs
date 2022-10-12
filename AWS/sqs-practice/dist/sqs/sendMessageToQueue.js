@@ -1,34 +1,30 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SendMessageToQueue = void 0;
-const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const SendMessageToQueue = (event, context, callback) => {
+const sqsInstance_1 = require("../common/sqsInstance");
+const SendMessageToQueue = (event, context, callback) => __awaiter(void 0, void 0, void 0, function* () {
     context.callbackWaitsForEmptyEventLoop = false;
     const body = JSON.parse(event.body);
-    aws_sdk_1.default.config.update({ region: "REGION" });
-    const sqs = new aws_sdk_1.default.SQS({
-        apiVersion: "2012-11-05",
-        endpoint: "http://localhost:9324",
-        accessKeyId: "na",
-        secretAccessKey: "na",
-        region: "eu-west-1",
-    });
+    const sqs = (0, sqsInstance_1.sqsInstance)();
     const params = {
+        DelaySeconds: 0,
         QueueUrl: body.queueUrl,
         MessageBody: body.messageBody
     };
-    sqs.sendMessage(params, (err, data) => {
-        if (err) {
-            console.log("Error", err);
-            callback("error", JSON.stringify(err));
-        }
-        else {
-            console.log("Success", data);
-            callback(null, JSON.stringify(data));
-        }
-    });
-};
+    try {
+        yield sqs.sendMessage(params).promise();
+    }
+    catch (error) {
+        console.log("Error", error);
+    }
+});
 exports.SendMessageToQueue = SendMessageToQueue;
