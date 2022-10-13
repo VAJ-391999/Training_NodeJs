@@ -76,6 +76,29 @@ functions:
       - http:
           path: /sns/list/topic
           method: GET
+  dispatcher:
+    handler: src/sns/dispatcher.handler
+    events:
+      - sns:
+          arn: arn:aws:sns:us-east-1:000000000000:Test_Topic
+  publish:
+    handler: src/sns/publish.handler
+    events:
+      - http:
+          path: /sns/publish
+          method: POST
+  emailSubscribe:
+    handler: src/sns/emailSubscribe.handler
+    events:
+      - http:
+          path: /sns/subscribe/email
+          method: POST
+  listSubscriptions:
+    handler: src/sns/listSubscriptions.handler
+    events:
+      - http:
+          path: /sns/list/subscription
+          method: POST
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
