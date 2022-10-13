@@ -156,7 +156,7 @@ custom:
     autoCreate: true                 # create queue if not exists
     apiVersion: '2012-11-05'
     endpoint: http://0.0.0.0:9324
-    region: eu-west-1
+    region: eu-east-1
     accessKeyId: root
     secretAccessKey: root
     skipCacheInvalidation: false
