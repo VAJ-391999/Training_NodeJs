@@ -22,6 +22,7 @@
     "aws-sdk": "^2.1231.0",
     "class-validator": "^0.13.2",
     "dotenv": "^16.0.3",
-    "serverless-offline-sns": "^0.76.0"
+    "serverless-offline-sns": "^0.76.0",
+    "serverless-offline-sqs": "^6.0.0"
   }
 }
