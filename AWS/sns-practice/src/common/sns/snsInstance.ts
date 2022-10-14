@@ -1,6 +1,6 @@
 import { SNS } from "aws-sdk";
 import AWS = require("aws-sdk");
-import { config } from "../config/config";
+import { config } from "../../config/config";
 
 let sns: SNS | undefined;
 
@@ -9,7 +9,7 @@ export const snsInstance = (): SNS => {
     console.log("Create new SNS instance");
     sns = new AWS.SNS({
       apiVersion: "2010-03-31",
-      endpoint: config.snsEndpoint,
+      endpoint: config.sns.endPoint,
       region: config.region,
     });
   } else if (sns instanceof SNS) {

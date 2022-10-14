@@ -1,27 +1,33 @@
 import { APIGatewayEvent, Callback, Context } from "aws-lambda";
-import { snsInstance } from "../common/snsInstance";
+import { Response } from "../common/response/interface/response";
+import { responseHandler } from "../common/response/responseHandler";
+import { snsInstance } from "../common/sns/snsInstance";
 import { PublishRequest } from "./interface/publish.request";
 
-export const handler = (
+export const handler = async (
   event: APIGatewayEvent,
   context: Context,
   callback: Callback
 ) => {
+  console.log("Publish");
+
   const publishRequest: PublishRequest = JSON.parse(event!.body!);
 
-  const sns = snsInstance();
+  let response: Response;
+  try {
+    const sns = snsInstance();
 
-  sns
-    .publish({
-      TopicArn: publishRequest.topicArn,
-      Message: publishRequest.message,
-    })
-    .promise()
-    .then((data) => {
-      console.log("Data", data);
-      // callback(null, )
-    })
-    .catch((error) => {
-      console.log("Error", error);
-    });
+    const data = await sns
+      .publish({
+        TopicArn: publishRequest.topicArn,
+        Message: publishRequest.message,
+      })
+      .promise();
+
+    response = responseHandler(200, data);
+  } catch (error) {
+    response = responseHandler(500, error);
+  }
+
+  callback(null, response);
 };
